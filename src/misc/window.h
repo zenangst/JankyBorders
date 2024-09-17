@@ -261,6 +261,7 @@ static inline uint32_t window_create(int cid, CGRect frame, bool hidpi, bool unm
   SLSSetWindowTags(cid, wid, &set_tags, 64);
   SLSClearWindowTags(cid, wid, &clear_tags, 64);
   SLSSetWindowOpacity(cid, wid, 0);
+  SLSSetWindowLevel(cid, wid, kCGFloatingWindowLevel);
 
   CFIndex shadow_density = 0;
   CFNumberRef shadow_density_cf = CFNumberCreate(kCFAllocatorDefault,
