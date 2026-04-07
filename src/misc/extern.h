@@ -49,7 +49,7 @@ extern CGError SLSTransactionMoveWindowWithGroup(CFTypeRef transaction, uint32_t
 extern CGError SLSTransactionOrderWindow(CFTypeRef transaction, uint32_t wid, int order, uint32_t rel_wid);
 extern CGError SLSTransactionSetWindowAlpha(CFTypeRef transaction, uint32_t wid, float alpha);
 extern CGError SLSTransactionSetWindowSystemAlpha(CFTypeRef transaction, uint32_t wid, float alpha);
-extern CGError SLSTransactionSetWindowTransform(CFTypeRef transaction, uint32_t wid, int not, int important, CGAffineTransform transform);
+extern CGError SLSTransactionSetWindowTransform(CFTypeRef transaction, uint32_t wid, int unused, int important, CGAffineTransform transform);
 extern CGError SLSTransactionCommit(CFTypeRef transaction, int synchronous);
 extern CGError SLSTransactionCommitUsingMethod(CFTypeRef transaction, uint32_t method);
 
