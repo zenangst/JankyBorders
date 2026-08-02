@@ -355,6 +355,26 @@ void border_update(struct border* border, bool try_async) {
     border_update_internal(border, &settings_copy);
     pthread_mutex_unlock(&border->mutex);
   });
+  return;
+
+  if (!border->wid || !try_async) {
+    border_update_internal(border, settings);
+    pthread_mutex_unlock(&border->mutex);
+    return;
+  }
+
+  struct payload {
+    struct border* border;
+    struct settings settings;
+  }* payload = malloc(sizeof(struct payload));
+
+  payload->border = border;
+  payload->settings = *settings;
+
+  pthread_t thread;
+  pthread_create(&thread, NULL, border_update_async_proc, payload);
+  pthread_detach(thread);
+  pthread_mutex_unlock(&border->mutex);
 }
 
 void border_hide(struct border* border) {
