@@ -88,6 +88,8 @@ struct border {
   volatile uint32_t external_proxy_wid;
 
   struct settings setting_override;
+
+  uint64_t update_generation;
 };
 
 struct border* border_create();
