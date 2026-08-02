@@ -336,10 +336,25 @@ void border_move(struct border* border) {
 }
 
 void border_update(struct border* border, bool try_async) {
-  pthread_mutex_lock(&border->mutex);
+  // Debounce redraws: during a space change a window can be hit by a burst of
+  // events (unhide, level, reorder, focus) that each trigger border_update,
+  // producing a visible flicker per redraw. Give each border an incrementing
+  // update_generation and only run the last scheduled update, so a burst of
+  // updates collapses into a single redraw with the final state.
   struct settings* settings = border_get_settings(border);
-  border_update_internal(border, settings);
+  struct settings settings_copy = *settings;
+
+  pthread_mutex_lock(&border->mutex);
+  uint64_t gen = ++border->update_generation;
   pthread_mutex_unlock(&border->mutex);
+
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 80 * NSEC_PER_MSEC),
+                 dispatch_get_main_queue(), ^{
+    if (gen != border->update_generation) return;  // superseded by a newer update
+    pthread_mutex_lock(&border->mutex);
+    border_update_internal(border, &settings_copy);
+    pthread_mutex_unlock(&border->mutex);
+  });
   return;
 
   if (!border->wid || !try_async) {
