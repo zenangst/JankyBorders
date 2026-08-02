@@ -162,7 +162,6 @@ void border_create_window(struct border* border, CGRect frame, bool unmanaged, b
   pthread_mutex_lock(&border->mutex);
   int cid = border->cid;
   border->wid = window_create(cid, frame, hidpi, unmanaged);
-  if (!border->is_proxy) SLSSetWindowAlpha(cid, border->wid, 1.f);
 
   border->frame = frame;
   border->needs_redraw = true;
@@ -199,7 +198,7 @@ void border_update_internal(struct border* border, struct settings* settings) {
   if (!border->wid) {
     border_create_window(border,
                          frame,
-                         true,
+                         border->is_proxy,
                          settings->hidpi  );
   }
 
